@@ -1,0 +1,3 @@
+spiderfoot -m $(spiderfoot -M | grep email | awk '{print $1}' | tr '\n' ',' | sed 's/,$//')$ -t $(spiderfoot -T | grep EMAIL | awk '{print $1}' | tr '\n' ',' | sed 's/,$//')$ -f -s hcmus.edu.vn > raw_output.txt
+grep -E -o '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,6}' raw_output.txt > email.txt
+rm raw_output.txt
