@@ -1,0 +1,2 @@
+Hello {{.FirstName}},
+This is a plain text file that was sent to {{.Email}}. If you could be so kind as to copy and paste this URL into your browser: {{.URL}}
