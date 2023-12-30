@@ -65,25 +65,34 @@ class custom_gophish():
             return b64_attachment_content
 
         payloads = ast.literal_eval(os.getenv('PAYLOADS_FILE'))
-
         targets = [Attachment.parse(
             {   
-                'content': get_content(os.path.join(os.getenv('PATH_PAYLOAD'), payload)).decode(),
+                'content': get_content(os.path.join(os.getenv('PATH_PAYLOADS'), payload)).decode(),
                 'type': mimetypes.guess_type(payload)[0],
                 'name': payload
             }
         ) for payload in payloads]
         
+        html = os.path.join(os.getenv('PATH_TEMPLATES'), os.getenv('HTML_FILE_FOR_TEMPLATE'))
+        with open(html, 'r') as file:
+            html_content = file.read()
+
         template = Template(name=name,
-                            html='<html><body>Click <a href="{{.URL}}">here</a></body></html>',
+                            html=html_content,
                             attachments=targets)
 
         template = self.api.templates.post(template)
         return (template.name, template.id)
         
     def page_new(self, name=random_string(10)):
+        
+        html = os.path.join(os.getenv('PATH_PAGES'), os.getenv('HTML_FILE_FOR_PAGE'))
+        with open(html, 'r') as file:
+            html_content = file.read()
+
         page = Page(name=name,
-                    html="""<html><body>Click <a href="{{.URL}}">here</a></body></html>""")
+                    html=html_content)
+
         page = self.api.pages.post(page)
 
         return (page.name, page.id)
@@ -93,10 +102,10 @@ class custom_gophish():
         password = os.getenv("SEND_MAIL_PASSWORD")
         smtp = SMTP(interface_type = "SMTP",
                     name=name, 
-                    host="smtp.gmail.com:465",
+                    host=os.getenv("SMTP_HOST"),
                     username=username,
                     password=password,
-                    from_address = f"group testing <{username}>",
+                    from_address = f"{username}",
                     ignore_cert_errors = True)
 
         smtp = self.api.smtp.post(smtp)
@@ -108,20 +117,48 @@ class custom_gophish():
         page = Page(name=self.page_new()[0])
         template = Template(name=self.template_new()[0])
         smtp = SMTP(name=self.profile_new()[0])
-        url = 'https://127.0.0.1:3333'
 
         campaign = Campaign(name=name, 
                             groups=groups, 
                             page=page,
                             template=template, 
-                            smtp=smtp)
+                            smtp=smtp,
+                            url=os.getenv('CC_SERVER'))
 
         campaign = self.api.campaigns.post(campaign)
         print(campaign.name, campaign.id)
 
-mygophish = custom_gophish()
+    def group_delete_all(self):
+        for group in self.api.groups.get():
+            self.api.groups.delete(group.id)
+
+    def template_delete_all(self):
+        for template in self.api.templates.get():
+            self.api.templates.delete(template.id)
+        
+    def page_delete_all(self):
+        for page in self.api.pages.get():
+            self.api.pages.delete(page.id)
+            
+    def profile_delete_all(self):
+        for profile in self.api.smtp.get():
+            self.api.smtp.delete(profile.id)
+
+    def campaign_delete_all(self):
+        for campaign in self.api.campaigns.get():
+            self.api.campaigns.delete(campaign.id)
+
+    def delete_all(self):
+        self.campaign_delete_all()
+        self.group_delete_all()
+        self.template_delete_all()
+        self.page_delete_all()
+        self.profile_delete_all()
+
+# mygophish = custom_gophish()
 # mygophish.group_new()
 # mygophish.template_new()
 # mygophish.page_new()
 # mygophish.profile_new()
-mygophish.campaign_new()
+# mygophish.campaign_new()
+# mygophish.delete_all()
