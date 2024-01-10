@@ -13,4 +13,4 @@ if ! python3 -c "import dotenv" 2>/dev/null; then
 fi
 
 # Run your Python script
-python3 tools/gophish/custom_gophish.py
+python3 tools/gophish/run_custom.py
