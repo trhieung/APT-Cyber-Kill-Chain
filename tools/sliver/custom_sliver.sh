@@ -1,10 +1,34 @@
-#!/bin/bash
+#!/usr/bin/expect
 
-path="../client_configs/"
-name="20120083"
+set path "./client_configs"
+set name "20120083"
 
-sliver-server
-new-operator --name "$name" --lhost 18.143.102.216 --lport 31337 --save "${name}_client_18.143.102.216_31337"
-exit
+# Check if the folder exists, create it if not
+if {![file isdirectory $path]} {
+    if {[catch {file mkdir $path} error]} {
+        puts "Error creating folder: $error"
+        exit 1
+    }
+}
 
-copy "${name}_client_18.143.102.216_31337" "/var/www/apt_domain/configs/"
+spawn sliver-server
+
+# Wait for sliver-server to start (you can adjust the sleep duration as needed)
+sleep 1
+
+# Send your desired commands to the sliver-server terminal
+send "new-operator --name $name --lhost 18.143.102.216 --lport 31337 --save $path/${name}.cfg\r"
+
+# Optionally, you can add more commands as needed
+# send "new-operator --name $name --lhost 18.143.102.216 --lport 31337 --save $path/${name}.cfg\r"
+# cp "$path/${name}.cfg" "/var/www/apt_domain/configs/"
+
+# Add a delay to keep the sliver-server terminal window open for a while
+sleep 1
+
+# Close the sliver-server terminal gracefully
+send "exit\r"
+expect eof
+
+cp "$path/${name}.cfg" "/var/www/apt_domain/configs/"
+
