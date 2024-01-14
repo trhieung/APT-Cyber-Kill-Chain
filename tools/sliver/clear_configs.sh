@@ -1,3 +1,3 @@
-#!/usr/bin/expect
+#!/bin/bash
 rm -rf client_configs/*
 y
