@@ -29,6 +29,12 @@ foreach name $names {
     sleep 0.1
 }
 
+set filelist [exec find $path -type f]
+
+foreach file $filelist {
+    puts $file
+}
+
 # Add a delay to make sure the new operators are created
 sleep 0.1
 
