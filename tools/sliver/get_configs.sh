@@ -1,6 +1,6 @@
 #!/usr/bin/expect
 
-set path "./client_configs"
+set path "./tools/sliver/client_configs"
 set names {"20120078" "20120083" "20120116" "20120176" "20120313"}
 
 # Check if the folder exists, create it if not
@@ -10,12 +10,7 @@ if {![file isdirectory $path]} {
         exit 1
     }
 }
-
-# # Delete older configs
-# exec rm -rf "/var/www/apt_domain/configs/*.cfg"
-# exec rm -rf "$path/*.cfg"
-# exec rm -rf "/home/kali/.sliver-client/*.cfg"
-# sleep 0.1
+sleep 0.1
 
 spawn sliver-server
 
