@@ -16,7 +16,7 @@ echo "Clean relative folder success!"
 
 ## Kill old multiplayer mode in previous sliver-server
 ./tools/sliver/kill_multiplayermod.sh 31337
-echo "Prepare success!"
+echo "Prepare success!"git p
 
 # # Run
 ./tools/sliver/get_configs.sh
