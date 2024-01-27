@@ -50,12 +50,4 @@ ls ./tools/sliver/client_configs
 ls /var/www/apt_domain/configs
 ls /home/kali/.sliver-client/configs
 
-
-# Use glob to get the list of files in the client_configs folder
-set filelist [glob -nocomplain "${path}/*"]
-
-# Copy each file individually
-foreach file $filelist {
-    exec cp $file "/var/www/apt_domain/configs/"
-    exec cp $file "/home/kali/.sliver-client/configs"
-}
+sliver-client import /home/kali/git-test/APT-Cyber-Kill-Chain//tools/sliver/client_configs/
