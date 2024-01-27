@@ -11,6 +11,12 @@ if {![file isdirectory $path]} {
     }
 }
 
+# # Delete older configs
+# exec rm -rf "/var/www/apt_domain/configs/*.cfg"
+# exec rm -rf "$path/*.cfg"
+# exec rm -rf "/home/kali/.sliver-client/*.cfg"
+# sleep 0.1
+
 spawn sliver-server
 
 # Wait for sliver-server to start (you can adjust the sleep duration as needed)
@@ -28,23 +34,21 @@ foreach name $names {
 # Add a delay to make sure the new operators are created
 sleep 0.1
 
-# Close the sliver-server terminal gracefully
-send "exit\r"
-expect eof
-
 # Use glob to get the list of files in the client_configs folder
 set filelist [glob -nocomplain "${path}/*"]
 
 # Copy each file individually
 foreach file $filelist {
     exec cp $file "/var/www/apt_domain/configs/"
+    exec cp $file "/home/kali/.sliver-client/configs"
 }
 
 # Grant read and execute permissions to everyone for the copied folder and its contents
 exec chmod -R +rX /var/www/apt_domain/configs/
 
-
-spawn sliver-server
-sleep 0.1
+# Continue using sliver-server
 send "multiplayer\r"
 send "operators\r"
+
+# Enter interactive mode, allowing you to manually interact with sliver-server
+interact
