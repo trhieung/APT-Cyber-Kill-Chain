@@ -32,10 +32,16 @@ done
 mkdir -p "$OUTPUT_DIR"
 
 # Your existing script
-COMMAND="# spiderfoot -m \$(spiderfoot -M | grep email | awk '{print \$1}' | tr '\\n' ',' | sed 's/,\$//')\$ -t \$(spiderfoot -T | grep EMAIL | awk '{print \$1}' | tr '\\n' ',' | sed 's/,\$//')\$ -f -s $DOMAIN > $OUTPUT_DIR/raw_output.txt
-spiderfoot -m sfp_emailformat -t \$(spiderfoot -T | grep EMAIL | awk '{print \$1}' | tr '\\n' ',' | sed 's/,\$//')\$ -f -s $DOMAIN > $OUTPUT_DIR/raw_output.txt
-awk -F'\t' '{print \$3}' $OUTPUT_DIR/raw_output.txt | grep -E '\\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Z|a-z]{2,}\\b' > $OUTPUT_DIR/$OUTPUT_FILE
-rm $OUTPUT_DIR/raw_output.txt"
+COMMAND="spiderfoot \
+          -m \$(spiderfoot -M | grep -E 'email|web' | awk '{print \$1}' | tr '\\n' ',' | sed 's/,\$//')\$ \
+          -t \$(spiderfoot -T | grep -E 'EMAIL|WEB' | awk '{print \$1}' | tr '\\n' ',' | sed 's/,\$//')\$ \
+          -f -s $DOMAIN > $OUTPUT_DIR/raw_output.txt\
+
+        awk \
+          -F'\t' '{print \$3}' $OUTPUT_DIR/raw_output.txt | grep -E '\\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Z|a-z]{2,}\\b' > $OUTPUT_DIR/$OUTPUT_FILE\
+
+        rm $OUTPUT_DIR/raw_output.txt"
+# echo $COMMAND
 
 # Execute the command
 eval "$COMMAND"

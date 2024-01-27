@@ -8,7 +8,7 @@ echo "Execute permission set for all Sliver scripts"
 find ./tools/apache2/ -name "*.sh" -type f -exec chmod +x {} \;
 echo "Execute permission set for all Apache2 scripts"
 
-# Prepare - clean folder + kill old process
+# Prepare - clean folder + kill old process + create payload
 ## Clean folder
 ./tools/sliver/clear_configs.sh
 ./tools/apache2/clear_configs.sh
@@ -18,5 +18,5 @@ echo "Clean relative folder success!"
 ./tools/sliver/kill_multiplayermod.sh 31337
 echo "Prepare success!"git p
 
-# # Run
+# Run
 ./tools/sliver/get_configs.sh
