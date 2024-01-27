@@ -1,27 +1,22 @@
 #!/bin/bash
 
-# Function to set execute permission on a file
-set_execute_permission() {
-    if [ -x "$1" ]; then
-        echo "Execute permission already set for $1"
-    else
-        chmod +x "$1"
-        echo "Execute permission set for $1"
-    fi
-}
-
 # Set execute permissions for Sliver scripts
-set_execute_permission "./tools/sliver/*.sh"
-# set_execute_permission "./tools/sliver/custom_sliver.sh"
-# set_execute_permission "./tools/sliver/clear_configs.sh"
-# set_execute_permission "./tools/sliver/get_config.sh"
-# set_execute_permission "./tools/sliver/active_server.sh"
+find ./tools/sliver/ -name "*.sh" -type f -exec chmod +x {} \;
+echo "Execute permission set for all Sliver scripts"
 
-# Set execute permissions for Apache2 script
-set_execute_permission "./tools/apache2/custom_apache2.sh"
+# Set execute permissions for Apache2 scripts
+find ./tools/apache2/ -name "*.sh" -type f -exec chmod +x {} \;
+echo "Execute permission set for all Apache2 scripts"
 
-# Kill old multiplayer mod
+# Prepare - clean folder + kill old process
+## Clean folder
+./tools/sliver/clear_configs.sh
+./tools/apache2/clear_configs.sh
+echo "Clean relative folder success!"
+
+## Kill old multiplayer mode in previous sliver-server
 ./tools/sliver/kill_multiplayermod.sh
+echo "Prepare success!"
 
-# ./tools/spiderfoot/emails_from_domain.sh -d "hcmus.edu.vn" -o "emails_hcmus_edu_vn.txt" -r "./data/emails"
-# ./tools/sliver/get_config.sh
+# # Run
+# ./tools/sliver/get_configs.sh

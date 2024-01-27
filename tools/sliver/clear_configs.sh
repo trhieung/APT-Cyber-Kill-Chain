@@ -1,3 +1,4 @@
 #!/bin/bash
-rm -rf client_configs/*
-y
+
+rm -rf ./tools/sliver/client_configs/*
+echo "clear folder ./tools/sliver/client_configs success!"
