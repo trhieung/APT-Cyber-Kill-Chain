@@ -15,8 +15,8 @@ echo "Execute permission set for all Apache2 scripts"
 echo "Clean relative folder success!"
 
 ## Kill old multiplayer mode in previous sliver-server
-./tools/sliver/kill_multiplayermod.sh
+./tools/sliver/kill_multiplayermod.sh 31337
 echo "Prepare success!"
 
 # # Run
-# ./tools/sliver/get_configs.sh
+./tools/sliver/get_configs.sh

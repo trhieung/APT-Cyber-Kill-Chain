@@ -43,3 +43,19 @@ kick-operator -n 20120176
 kick-operator -n 20120313
 
 sudo chmod -R +rX /var/www/apt_domain/beacons/
+
+nano ./tools/sliver/client_configs/20120083_18.143.102.216.cfg
+
+ls ./tools/sliver/client_configs
+ls /var/www/apt_domain/configs
+ls /home/kali/.sliver-client/configs
+
+
+# Use glob to get the list of files in the client_configs folder
+set filelist [glob -nocomplain "${path}/*"]
+
+# Copy each file individually
+foreach file $filelist {
+    exec cp $file "/var/www/apt_domain/configs/"
+    exec cp $file "/home/kali/.sliver-client/configs"
+}
