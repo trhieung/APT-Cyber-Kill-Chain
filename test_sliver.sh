@@ -18,5 +18,5 @@ echo "Clean relative folder success!"
 ./tools/sliver/kill_multiplayermod.sh 31337
 echo "Prepare success!"
 
-# # Run
+# Run
 ./tools/sliver/get_configs.sh
