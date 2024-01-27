@@ -32,12 +32,6 @@ foreach name $names {
 # Add a delay to make sure the new operators are created
 sleep 0.1
 
-# Grant read and execute permissions to everyone for the copied folders and their contents
-exec chmod -R +rX $destFolder1
-exec chmod -R +rX $destFolder2
-
-sleep 0.1
-
 # Continue using sliver-server
 send "multiplayer\r"
 send "operators\r"
