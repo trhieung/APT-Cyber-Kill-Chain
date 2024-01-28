@@ -8,7 +8,7 @@ payload_file="./data/payloads/win_stager.c"
 c_script_file="./data/payloads/win_runner.c"
 exe_script_file="./data/payloads/runner.exe"
 # path of runner.exe in apache
-target_directory="."
+target_directory="/var/www/apt_domain/stagers"
 
 # Check if the file exists
 [ -e "$payload_file" ] || { echo "File '$payload_file' does not exist."; exit 1; }

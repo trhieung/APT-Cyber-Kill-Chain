@@ -20,6 +20,8 @@ echo "Prepare success!"
 
 # Run
 rm -rf ./data/payloads/win_stager.c
+rm -rf ./data/payloads/win_runner.c
+rm -rf ./data/payloads/win_runner.exe
 # ./tools/sliver/get_configs.sh
 # ./tools/sliver/get_stagers.sh
 ./tools/sliver/auto.sh
