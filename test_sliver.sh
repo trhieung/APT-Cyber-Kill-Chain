@@ -16,6 +16,7 @@ echo "Clean relative folder success!"
 
 ## Kill old multiplayer mode in previous sliver-server
 ./tools/sliver/kill_multiplayermod.sh 31337
+./tools/sliver/kill_multiplayermod.sh 1234
 echo "Prepare success!"
 
 # Run
@@ -25,5 +26,3 @@ rm -rf ./data/payloads/win_runner.exe
 # ./tools/sliver/get_configs.sh
 # ./tools/sliver/get_stagers.sh
 ./tools/sliver/auto.sh
-
-

