@@ -32,9 +32,9 @@ foreach name $names {
 # Add a delay to make sure the new operators are created
 sleep 0.1
 
-# Continue using sliver-server
-send "multiplayer\r"
-send "operators\r"
+# # Continue using sliver-server
+# send "multiplayer\r"
+# send "operators\r"
 
 # # Enter interactive mode, allowing you to manually interact with sliver-server
 # interact
