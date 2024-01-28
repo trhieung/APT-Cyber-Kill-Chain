@@ -36,5 +36,5 @@ sleep 0.1
 send "multiplayer\r"
 send "operators\r"
 
-# Enter interactive mode, allowing you to manually interact with sliver-server
-interact
+# # Enter interactive mode, allowing you to manually interact with sliver-server
+# interact

