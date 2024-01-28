@@ -16,9 +16,12 @@ echo "Clean relative folder success!"
 
 ## Kill old multiplayer mode in previous sliver-server
 ./tools/sliver/kill_multiplayermod.sh 31337
-echo "Prepare success!"git p
+echo "Prepare success!"
 
 # Run
+rm -rf ./data/payloads/win_stager.c
 # ./tools/sliver/get_configs.sh
 # ./tools/sliver/get_stagers.sh
 ./tools/sliver/auto.sh
+
+
