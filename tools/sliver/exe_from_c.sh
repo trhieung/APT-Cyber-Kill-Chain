@@ -3,12 +3,12 @@
 # THEN MOVE IT TO /var/www/html/stagers
 
 #sliver "generate stager" command stored payload at --save /tmp/payload.c
-payload_file="/tmp/payload.c"
+payload_file="./data/payloads/win_stager.c"
 
-c_script_file="/tmp/runner.c"
-exe_script_file="/tmp/runner.exe"
+c_script_file="./data/payloads/win_runner.c"
+exe_script_file="./data/payloads/runner.exe"
 # path of runner.exe in apache
-target_directory="/var/www/html/stagers"
+target_directory="."
 
 # Check if the file exists
 [ -e "$payload_file" ] || { echo "File '$payload_file' does not exist."; exit 1; }
