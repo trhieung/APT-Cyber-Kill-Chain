@@ -2,7 +2,7 @@ import os
 import subprocess
 import csv
 from dotenv import load_dotenv
-from tools/gophish/custom_gophish import custom_gophish
+from tools.gophish.custom_gophish import custom_gophish
 
 def run_shell_script(script_path):
     try:
@@ -45,6 +45,7 @@ class reconaissance:
 
             # Write data rows
             for email in emails:
+                print(email)
                 writer.writerow({
                     "First_Name": "APT",
                     "Last_Name": "APT",

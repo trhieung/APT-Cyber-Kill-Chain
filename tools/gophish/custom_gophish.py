@@ -8,7 +8,8 @@ import csv
 import ast
 import base64
 import mimetypes
-
+import urllib3
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 def random_string(length):
     characters = string.ascii_letters + string.digits
