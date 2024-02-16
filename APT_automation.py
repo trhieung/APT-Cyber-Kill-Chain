@@ -2,6 +2,7 @@ import os
 import subprocess
 import csv
 from dotenv import load_dotenv
+from tools/gophish/custom_gophish import custom_gophish
 
 def run_shell_script(script_path):
     try:
@@ -82,7 +83,7 @@ class reconaissance:
                         unique_emails.add(email)
 
                 self.get_csv_from_emails(os.path.join(output_directory, csv_file), unique_emails)
-                
+
                 if os.path.exists(file_path): 
                     os.remove(file_path)
                 
@@ -98,11 +99,51 @@ class reconaissance:
         # Call the function to run the shell script
         self.run_shell_script_with_env(script_path)
 
+class weaponization:
+    def __init__(self) -> None:
+        print(self)
+    
+    def __str__(self) -> str:
+        return (
+            "WEAPONIZATION PHASE:\n"
+            "---------------------------------------\n"
+            "Generate payload with Sliver in ps1 format\n"
+            "Upload to Apache server\n"
+        )
+
+class delivery:
+    def __init__(self) -> None:
+        print(self)
+        self.start_gophish()
+    
+    def __str__(self) -> str:
+        return (
+            "DELIVERY PHASE:\n"
+            "---------------------------------------\n"
+            "Send emails with containing links to Apache server to emails address just obtained in the reconnaisence stage\n"
+        )
+    
+    def start_gophish(self):
+        mygophish = custom_gophish()
+        mygophish.campaign_new()
+
+class installation:
+    def __init__(self) -> None:
+        print(self)
+
+    def __str__(self) -> str:
+        return (
+            "INSTALLATION PHASE:\n"
+            "---------------------------------------\n"
+            "Waiting for target systems running the payload for creating the backdoor ...\n"
+        )
+
 def main():
     list_phase = []
     list_phase.append(reconaissance())
-    # a = list_phase[0]
-    # print(a)
+    list_phase.append(weaponization())
+    list_phase.append(delivery())
+    list_phase.append(installation())
 
 if __name__ == '__main__':
     main()
