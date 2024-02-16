@@ -46,8 +46,9 @@ class custom_gophish():
 
         # next update need to check if exist group_name
 
-        emails = ast.literal_eval(os.getenv('EMAILS_FILE'))
-        file_names = [os.path.join(os.getenv('PATH_EMAILS'), name) for name in emails]
+        # emails = ast.literal_eval(os.getenv('EMAILS_FILE'))
+        # file_names = [os.path.join(os.getenv('PATH_EMAILS'), name) for name in emails]
+        file_names = [os.path.join(os.getenv('PATH_EMAILS'), os.getenv('EMAIL_FILE_CSV'))]
 
         targets = []
         for file_name in file_names:
@@ -127,7 +128,7 @@ class custom_gophish():
                             url=os.getenv('CC_SERVER'))
 
         campaign = self.api.campaigns.post(campaign)
-        print(campaign.name, campaign.id)
+        print(f"+ campaign_name = {campaign.name}, campaign_id = {campaign.id}")
 
     def group_delete_all(self):
         for group in self.api.groups.get():

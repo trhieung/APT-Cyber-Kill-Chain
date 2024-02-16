@@ -69,10 +69,12 @@ class reconaissance:
         if os.path.exists(file_path): 
             os.remove(file_path)
 
+        print(f"Waiting for scanning email from {domain}")
         try:
             # Run the shell script with the collected parameters
             subprocess.run(["bash", script_path, "-d", domain, "-o", output_file, "-r", output_directory], check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-            print("Shell script executed successfully.")
+            # print("Shell script executed successfully.")
+            print("+ emails from domain:")
 
             # Show taken emails
             if (os.path.exists(file_path)):
@@ -99,6 +101,7 @@ class reconaissance:
 
         # Call the function to run the shell script
         self.run_shell_script_with_env(script_path)
+        print('\n')
 
 class weaponization:
     def __init__(self) -> None:
@@ -127,6 +130,8 @@ class delivery:
     def start_gophish(self):
         mygophish = custom_gophish()
         mygophish.campaign_new()
+
+        print('\n')
 
 class installation:
     def __init__(self) -> None:
