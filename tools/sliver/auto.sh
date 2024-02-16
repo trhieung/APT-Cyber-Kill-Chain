@@ -24,7 +24,7 @@ send "multiplayer\r"
 send "operators\r"
 send "profiles\r"
 send "stage-listener --url tcp://18.143.102.216:1234 --profile win64\r"
-send "mtls -l 8080"
+send "mtls -l 8080\r"
 send "jobs\r"
 
 interact
