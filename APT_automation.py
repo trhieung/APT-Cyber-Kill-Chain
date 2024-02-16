@@ -1,5 +1,6 @@
 import os
 import subprocess
+import csv
 from dotenv import load_dotenv
 
 def run_shell_script(script_path):
@@ -32,15 +33,33 @@ class reconaissance:
             "- Email gateway\n"
             "- Username\n"
         )
+    
+    def get_csv_from_emails(self, csv_file_path, emails):
+        with open(csv_file_path, 'w', newline='') as csv_file:
+            fieldnames = ["First_Name", "Last_Name", "Position", "Email"]
+            writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
+
+            # Write header row
+            writer.writeheader()
+
+            # Write data rows
+            for email in emails:
+                writer.writerow({
+                    "First_Name": "APT",
+                    "Last_Name": "APT",
+                    "Position": "APT",
+                    "Email": email
+                })
 
     def run_shell_script_with_env(self, script_path):
         # Load environment variables from .env file
         load_dotenv()
 
         # Collect parameters from environment variables
-        domain = os.getenv("WEB_DOMAIN")
-        output_file = os.getenv("EMAIL_FILE")
         temp = os.path.join(".", os.getenv("PATH_EMAILS"))
+        domain = os.getenv("WEB_DOMAIN")
+        output_file = os.getenv("EMAIL_FILE_TXT")
+        csv_file = os.getenv("EMAIL_FILE_CSV")
         output_directory = temp[:-1]
         file_path = os.path.join(output_directory, output_file)
 
@@ -55,9 +74,18 @@ class reconaissance:
 
             # Show taken emails
             if (os.path.exists(file_path)):
+                unique_emails = set()
+
                 with open(file_path, 'r') as f:
-                    content = f.read()
-                    print(content)
+                    for line in f:
+                        email = line.strip() # Remove leading/trailing whitespaces and newline characters
+                        unique_emails.add(email)
+
+                self.get_csv_from_emails(os.path.join(output_directory, csv_file), unique_emails)
+                
+                if os.path.exists(file_path): 
+                    os.remove(file_path)
+                
             else: print(f"file in path {file_path} not found!")
 
         except subprocess.CalledProcessError as e:
