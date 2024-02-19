@@ -106,6 +106,7 @@ class reconaissance:
 class weaponization:
     def __init__(self) -> None:
         print(self)
+        self.create_payload_ps1()
     
     def __str__(self) -> str:
         return (
@@ -114,6 +115,23 @@ class weaponization:
             "Generate payload with Sliver in ps1 format\n"
             "Upload to Apache server\n"
         )
+    
+    def run_shell_script(self, script_path, file_path):
+        try:
+            # Run the shell script
+            subprocess.run(["bash", script_path, file_path], check=True)
+            # # Run the shell script silently
+            # subprocess.run(["bash", script_path], check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            print("Shell script executed successfully.")
+        except subprocess.CalledProcessError as e:
+            print(f"Error executing shell script: {e}")
+    
+    def create_payload_ps1(self, file_path = "./data/payloads/win_stager.c"):
+        script_path = "./tools/sliver/get_stagers.sh"
+
+        # Call the function to run the shell script
+        self.run_shell_script(script_path, file_path)
+        print('\n')
 
 class delivery:
     def __init__(self) -> None:
