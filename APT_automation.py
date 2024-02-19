@@ -22,7 +22,7 @@ class reconaissance:
 
         load_dotenv()
         print(self)
-        # self.start_spiderfoot()
+        self.start_spiderfoot()
 
     def __str__(self) -> str:
         return (
@@ -196,14 +196,21 @@ class weaponization:
 
     def clear_phase(self):
         # check shell code
-        print(self.shellcode)
-        print("---------------------------------------")
-        print(self.payload)
+        # print(self.shellcode)
+        # print("---------------------------------------")
+        # print(self.payload)
+
+        try:
+            # Remove the file specified in self.temp_shellcode_path
+            subprocess.run(["rm", "-rf", self.temp_shellcode_path], check=True)
+
+        except subprocess.CalledProcessError as e:
+            print(f"Error removing file: {e}")
 
 class delivery:
     def __init__(self) -> None:
         print(self)
-        # self.start_gophish()
+        self.start_gophish()
     
     def __str__(self) -> str:
         return (
