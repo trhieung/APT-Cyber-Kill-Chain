@@ -122,6 +122,8 @@ class weaponization:
         self.update_shellcode_in_payload(data_in_shellcode_file, data_in_payload_file)
         self.upload_to_website(os.path.join(self.public_server_path, self.public_payload_name))
         self.clear_phase()
+
+        print('\n')
     
     def __str__(self) -> str:
         return (
@@ -225,6 +227,17 @@ class delivery:
 
         print('\n')
 
+class exploitation:
+    def __init__(self) -> None:
+        print(self)
+
+    def __str__(self) -> str:
+        return (
+            "EXPLOITATION PHASE:\n"
+            "---------------------------------------\n"
+            "Waiting for target systems running the payload for creating the backdoor ...\n"
+        )
+
 class installation:
     def __init__(self) -> None:
         print(self)
@@ -235,12 +248,54 @@ class installation:
             "---------------------------------------\n"
             "Waiting for target systems running the payload for creating the backdoor ...\n"
         )
+    
+class c2:
+    def __init__(self) -> None:
+        print(self)
+
+        # self.create_configs_for_sliver_cli()
+        self.kill_old_process()
+        self.start_sliver_server()
+        
+
+    def __str__(self) -> str:
+        return (
+            "COMMAND & CONTROL PHASE:\n"
+            "---------------------------------------\n"
+        )
+    
+    def kill_old_process(self):
+        script_path = "./tools/sliver/kill_multiplayermod.sh"
+        try:
+            # Run the shell script with the collected parameters
+            subprocess.run(["bash", script_path, 31337], check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            subprocess.run(["bash", script_path, 1234], check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            print("Prepare success!")
+
+        except subprocess.CalledProcessError as e:
+            print(f"Error executing shell script: {e}")
+
+    def start_sliver_server(self):
+        script_path = "run_custom_sliver.sh"
+        try:
+            # Change permissions of get_configs.sh to make it executable
+            subprocess.run(["chmod", "+x", script_path], check=True)
+
+            # Run the shell script
+            subprocess.run(["expect", script_path], check=True)
+            # # Run the shell script silently
+            # subprocess.run(["bash", script_path], check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+
+            # print("Shell script executed successfully.")
+        except subprocess.CalledProcessError as e:
+            print(f"Error executing shell script: {e}")
 
 def main():
     list_phase = []
-    list_phase.append(reconaissance())
+    # list_phase.append(reconaissance())
     list_phase.append(weaponization())
-    list_phase.append(delivery())
+    # list_phase.append(delivery())
+    list_phase.append(exploitation())
     list_phase.append(installation())
 
 if __name__ == '__main__':
