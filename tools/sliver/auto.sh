@@ -5,7 +5,7 @@ set path "./data/payloads"
 
 # Prepare stager.c file
 puts "Waiting for default stager.c created"
-exec ./tools/sliver/get_stagers.sh $payload_c
+exec ./tools/sliver/get_stagers_format_exe.sh $payload_c
 puts "Default stager.c create successfully saving at $path!"
 
 # Create .exe file from another .sh file

