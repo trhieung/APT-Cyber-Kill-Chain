@@ -10,8 +10,8 @@ puts $payload_c
 # set payload_c "./data/payloads/win_stager.c"
 # puts $payload_c
 
-# Prepare configs file for teams
-exec ./tools/sliver/get_configs.sh
+# # Prepare configs file for teams
+# exec ./tools/sliver/get_configs.sh
 
 # Activate Sliver server
 spawn sliver-server

