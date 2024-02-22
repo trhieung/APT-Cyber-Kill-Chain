@@ -35,5 +35,5 @@ expect {
 # Now send the exit command
 send "exit\r"
 
-# # Wait for the process to finish
-# wait
+# Wait for the process to finish
+wait
