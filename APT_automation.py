@@ -127,7 +127,7 @@ class weaponization:
 
         data_in_shellcode_file = self.create_shellcode(self.temp_shellcode_path)
         data_in_payload_file = self.load_payload_template(self.payload_template)        
-        check = self.create_payload_for_lateral_movement(self.payload_for_lateral_movement)
+        # check = self.create_payload_for_lateral_movement(self.payload_for_lateral_movement)
 
         self.update_shellcode_in_payload(data_in_shellcode_file, data_in_payload_file)
         self.upload_to_website(self.payload_path)
