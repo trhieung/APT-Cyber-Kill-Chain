@@ -17,7 +17,7 @@ sleep 1
 send "generate --format service --mtls 18.143.102.216:8080 --save $file_path\r"
 
 # # Wait for the file $payload_c to exist
-set timeout 100
+set timeout 120
 expect {
     timeout {
         exit 0
