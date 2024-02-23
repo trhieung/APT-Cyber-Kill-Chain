@@ -16,16 +16,10 @@ sleep 1
 # Generate the payload
 send "generate --format service --mtls 18.143.102.216:8080 --save $file_path\r"
 
-# Wait for the file $payload_c to exist
-set timeout 200
+# # Wait for the file $payload_c to exist
+set timeout 100
 expect {
     timeout {
-        exit 1
+        exit 0
     }
 }
-
-# Now send the exit command
-send "exit\r"
-
-# Wait for the process to finish
-wait
