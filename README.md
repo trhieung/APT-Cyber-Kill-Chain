@@ -67,4 +67,8 @@ During the cyberkill training, this tool is considered for weaponization and com
 more detail [here](https://github.com/trhieung/APT-Cyber-Kill-Chain/tree/main/tools/sliver/)
 
 ## Documentation
-Work in progress
+This documentation pertains to the project developed as part of the graduation thesis at Ho Chi Minh University of Science, specifically within the Department of Information Technology, specializing in Information Security.
+
+The complete documentation, detailing the entire process from inception to completion, has been prepared for internal review, including the involvement of team members and the guidance provided by the project supervisor. For privacy reasons, the full documentation cannot be publicly disclosed.
+
+For inquiries or further information, please contact 20120083@student.hcmus.edu.vn. In case of any issues with the student email, an alternative contact can be made via nthieu.ngtr@gmail.com
